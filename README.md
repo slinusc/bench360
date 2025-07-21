@@ -172,5 +172,3 @@ Fork the repo, create a feature branch, and submit your PR.
 ## 📄 License
 
 Bench360 is released under the [MIT License](LICENSE).
-
-```
