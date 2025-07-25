@@ -4,6 +4,8 @@
 
 It enables researchers and practitioners to analyze **latency, throughput, quality, efficiency, and cost** in real-world tasks like summarization, QA, and SQL generation—under both consumer and data center conditions.
 
+![Bench360°](benchmark/docs/bench360.jpg)
+
 ---
 
 ## 🔍 Why Bench360?
