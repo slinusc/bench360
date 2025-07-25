@@ -1,5 +1,7 @@
 # Bench360 – Local LLM Deployment Benchmark Suite
 
+> 🧠 Quantization. 📦 Engines. ⚡ Throughput. 🎯 Task Quality. One Benchmark.
+
 **Bench360** is a modular benchmarking framework for evaluating **local LLM deployments** across backends, quantization formats, model architectures, and deployment scenarios.
 
 It enables researchers and practitioners to analyze **latency, throughput, quality, efficiency, and cost** in real-world tasks like summarization, QA, and SQL generation—under both consumer and data center conditions.
@@ -10,13 +12,28 @@ It enables researchers and practitioners to analyze **latency, throughput, quali
 
 ## 🔍 Why Bench360?
 
-When deploying LLMs locally, there’s no one-size-fits-all. Bench360 helps answer:
+When deploying LLMs locally, trade-offs between **model size**, **quantization**, and **inference engine** can drastically impact performance and feasibility. Bench360 helps answer the real-world questions that arise when resources are limited and requirements are strict:
 
-- **Which model + quant format** yields the best performance for my use case?
-- **What’s the latency/throughput trade-off** for vLLM vs. TGI vs. SGLang vs. LMDeploy?
-- **How do batch and concurrent scenarios behave under load?**
-- **How much GPU memory, power, and time per query do I save with quantization?**
-- **Is the quality degradation from INT4 acceptable on e.g. SQL generation?**
+### ❓ Should you run a **7B model in FP16**, a **13B in INT8**, or a **33B in INT4**?
+
+Bench360 benchmarks across multiple quantization formats and model sizes—on the **same hardware** and **same tasks**—to help you understand the trade-offs between **quality**, **latency**, and **memory footprint**. Detailed telemetry (latency, throughput, energy/token) let you choose the sweet spot for your setup.
+
+---
+
+### ❓ Is **INT4 quantization good enough** for SQL generation or question answering?
+
+Bench360 evaluates functional task quality—not just perplexity. For Text-to-SQL, it reports **execution accuracy** and **AST match**; for QA and summarization, it computes **F1**, **EM**, and **ROUGE**. You’ll see whether aggressive quantization introduces failure cases *that actually matter*.
+
+---
+
+### ❓  Which inference backend delivers the best performance for my use case?
+
+Bench360 includes a workload controller that simulates different deployment scenarios:  
+- 🧵 Single-stream  
+- 📦 Offline batch  
+- 🌐 Multi-user server (with Poisson query arrivals)
+
+Engines like **vLLM**, **TGI**, **SGLang**, and **LMDeploy** can be tested under identical conditions.
 
 ---
 
