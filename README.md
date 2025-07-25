@@ -14,9 +14,9 @@ It enables researchers and practitioners to analyze **latency, throughput, quali
 
 When deploying LLMs locally, trade-offs between **model size**, **quantization**, and **inference engine** can drastically impact performance and feasibility. Bench360 helps answer the real-world questions that arise when resources are limited and requirements are strict:
 
-### ❓ Should you run a **7B model in FP16**, a **13B in INT8**, or a **33B in INT4**?
+### ❓ Should you run a **7B model in FP16**, a **13B in INT8**, or a **32B in INT4**?
 
-Bench360 benchmarks across multiple quantization formats and model sizes—on the **same hardware** and **same tasks**—to help you understand the trade-offs between **quality**, **latency**, and **memory footprint**. Detailed telemetry (latency, throughput, energy/token) let you choose the sweet spot for your setup.
+Bench360 benchmarks across multiple quantization formats and model sizes to help you understand the trade-offs between **quality**, **latency**, and **energy consumption**. Detailed telemetry let you choose the sweet spot for your setup.
 
 ---
 
@@ -31,7 +31,7 @@ Bench360 evaluates functional task quality—not just perplexity. For Text-to-SQ
 Bench360 includes a workload controller that simulates different deployment scenarios:  
 - 🧵 Single-stream  
 - 📦 Offline batch  
-- 🌐 Multi-user server (with Poisson query arrivals)
+- 🌐 Multi-user server (with Poisson multi thread query arrivals)
 
 Engines like **vLLM**, **TGI**, **SGLang**, and **LMDeploy** can be tested under identical conditions.
 
