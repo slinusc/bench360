@@ -1,6 +1,6 @@
 # Bench360 – Local LLM Deployment Benchmark Suite
 
-> 🧠 Quantization. 📦 Engines. ⚡ Throughput. 🎯 Task Quality. One Benchmark.
+> ⚡ System Performance. 🔋 Energy Consumption. 🎯 Task Quality. One Benchmark.
 
 **Bench360** is a modular benchmarking framework for evaluating **local LLM deployments** across backends, quantization formats, model architectures, and deployment scenarios.
 
