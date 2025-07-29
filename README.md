@@ -1,6 +1,6 @@
 # Bench360 – Local LLM Deployment Benchmark Suite
 
-> ⚡ System Performance. 🔋 Energy Consumption. 🎯 Task Quality. One Benchmark.
+> ⚡ System Performance. 🔋 Energy Consumption. 🎯 Task Quality.  - One Benchmark.
 
 **Bench360** is a modular benchmarking framework for evaluating **local LLM deployments** across backends, quantization formats, model architectures, and deployment scenarios.
 
@@ -71,9 +71,10 @@ cd fast_llm_inference
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-```
+````
 
 > System dependencies:
+
 ```bash
 sudo apt update && sudo apt install -y \
   libssl-dev libcurl4 build-essential libllvm15 \
@@ -89,12 +90,13 @@ docker pull lmsysorg/sglang:latest
 docker pull openmmlab/lmdeploy:latest
 docker pull vllm/vllm-openai:latest
 docker pull ghcr.io/huggingface/text-generation-inference:latest
-````
+```
 
 Export your Huggingface Token:
+
 ```bash
 export HF_TOKEN=<your HF token>
-````
+```
 
 ---
 
@@ -110,6 +112,10 @@ model_name: Mistral-7B
 task: qa
 scenario: single
 samples: 256
+```
+
+```bash
+python launch_benchmark.py config.yaml
 ```
 
 ---
@@ -131,6 +137,66 @@ batch_size: [16, 64]
 run_time: 300
 concurrent_users: [8, 16, 32]
 requests_per_user_per_min: 12
+```
+
+```bash
+python launch_benchmark.py config.yaml
+```
+
+---
+
+## 🧩 Add Your Own Task
+
+Bench360 supports **plug-and-play task customization**. You can easily define your own evaluation logic (e.g., for RAG, classification, chatbot scoring) using the base interface.
+
+### 🔨 Step 1: Create a New Task
+
+Create a file in:
+
+```
+benchmark/tasks/your_custom_task.py
+```
+
+Example:
+
+```python
+from benchmark.tasks.base_task import BaseTask
+
+class YourCustomTask(BaseTask):
+    def generate_prompts(self, num_examples: int):
+        prompts = [...]
+        references = [...]
+        return prompts, references
+
+    def quality_metrics(self, generated, reference):
+        return {
+            "custom_metric": some_score
+        }
+```
+
+### 📌 Step 2: Register It
+
+In `benchmark/tasks/__init__.py`, add:
+
+```python
+from .your_custom_task import YourCustomTask
+
+TASKS = {
+    "qa": QATask,
+    "summarization": SummarizationTask,
+    "sql": TextToSQLTask,
+    "your_task": YourCustomTask
+}
+```
+
+### ▶️ Step 3: Run It
+
+```yaml
+backend: vllm
+hf_model: mistralai/Mistral-7B-Instruct-v0.3
+task: your_task
+scenario: single
+samples: 100
 ```
 
 ```bash
@@ -191,3 +257,5 @@ Fork the repo, create a feature branch, and submit your PR.
 ## 📄 License
 
 Bench360 is released under the [MIT License](LICENSE).
+
+```
