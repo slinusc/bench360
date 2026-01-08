@@ -13,7 +13,7 @@ class QATask(BaseTask):
     def __init__(self):
         super().__init__()
         random.seed(42)
-        self.dataset = load_dataset("squad_v2")
+        self.dataset = load_dataset("rajpurkar/squad_v2")
 
     def generate_prompts(self, num_examples : int = 100):
         """
