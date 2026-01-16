@@ -18,6 +18,7 @@ class InferenceEngineClient:
         self.client = OpenAI(api_key=api_key, base_url=base_url, timeout=httpx.Timeout(60.0))
         self._launcher_proc = None
         self.model = None
+        self.NAME = "bench360_inference_engine"
 
     
 
@@ -41,7 +42,8 @@ class InferenceEngineClient:
         cmd = [
             script_path,
             f"--engine={backend}",
-            f"--model={model}"
+            f"--model={model}",
+            f"--name={self.NAME}"
         ]
         self._launcher_proc = subprocess.Popen(
             cmd,
@@ -176,25 +178,16 @@ class InferenceEngineClient:
 
     def close(self):
         """
-        Stop any Docker container exposing port 23333, terminate subprocess,
+        Stop Docker container, terminate subprocess,
         stop background log tailer (if running), and close HTTP client.
         """
         # 1) Attempt to find and stop the container(s) on port 23333
         try:
-            result = subprocess.run(
-                ["docker", "ps", "--filter", "publish=23333", "-q"],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.DEVNULL,
-                text=True,
-                check=True
+            subprocess.run(
+                ["docker", "stop", self.NAME],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
             )
-            container_ids = result.stdout.strip().split()
-            for cid in container_ids:
-                subprocess.run(
-                    ["docker", "stop", cid],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL
-                )
         except subprocess.CalledProcessError:
             pass  # Docker might not be running
 
