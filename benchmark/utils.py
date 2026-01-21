@@ -70,13 +70,15 @@ def clean_prediction(prediction: list[str]) -> list[str]:
     return cleaned
 
 
-def _start_log_tailer(self, max_lines: int = 30):
+def _start_log_tailer(self, max_lines: int = 30, dump_server_output: bool = False):
     """Spawn a daemon thread that reads the process’ output and
     stores the latest `max_lines` in self._log_buf (deque[str])."""
     self._log_buf = deque(maxlen=max_lines)
 
     def _tail():
         for line in self._launcher_proc.stdout:
+            if dump_server_output:
+                print(line)
             self._log_buf.append(line.rstrip("\n"))
             if self._stop_tail.is_set():
                 break

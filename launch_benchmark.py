@@ -75,7 +75,7 @@ def _ensure_output_dirs(exp_name: str) -> None:
 
 # ── Utility: result‑hash / stem / existence check ───────────────────────────
 
-def _run_multi_cfgs(cfgs: List[Dict[str, Any]], verbose: bool = False):
+def _run_multi_cfgs(cfgs: List[Dict[str, Any]], verbose: bool = False, dump_server_output: bool = False):
     prior_failures = _load_prior_failures()
     has_prior_failures = len(prior_failures) > 0
 
@@ -91,7 +91,7 @@ def _run_multi_cfgs(cfgs: List[Dict[str, Any]], verbose: bool = False):
     while pending_cfgs and attempt <= MAX_ATTEMPTS:
         # Only show attempt counter if retrying known failed configs
         show_attempts = has_prior_failures or attempt > 1
-        failures = _multi_run_cycle(pending_cfgs, verbose, attempt, MAX_ATTEMPTS, show_attempts)
+        failures = _multi_run_cycle(pending_cfgs, verbose, attempt, MAX_ATTEMPTS, show_attempts, dump_server_output)
         pending_cfgs = [cfg for cfg in (f[0] for f in failures) if not _results_exist(cfg)]
         unresolved = failures
         attempt += 1
@@ -222,7 +222,8 @@ def _multi_run_cycle(
     verbose: bool,
     attempt: int,
     total_attempts: int,
-    show_attempts: bool = True
+    show_attempts: bool = True,
+    dump_server_output: bool = False
 ) -> List[Tuple[Dict[str, Any], str]]:
     """Execute *runs*. Return list of tuples (cfg, error_trace) that failed."""
     if not runs:
@@ -282,6 +283,7 @@ def _multi_run_cycle(
                     top_p=top_p,
                     max_tokens=max_tokens,
                     verbose=verbose,
+                    dump_server_output=dump_server_output
                 )
                 active_key = key
 
@@ -313,22 +315,23 @@ def _multi_run_cycle(
 
 
 
-def _run_multi(yaml_path: str, verbose: bool = False):
+def _run_multi(yaml_path: str, verbose: bool = False, dump_server_output: bool = False):
     all_cfgs = load_multi_cfg(yaml_path)
-    _run_multi_cfgs(all_cfgs, verbose)
+    _run_multi_cfgs(all_cfgs, verbose, dump_server_output)
 
 
-def _run_single(yaml_path: str, verbose: bool = False):
+def _run_single(yaml_path: str, verbose: bool = False, dump_server_output: bool = False):
     with open(yaml_path, encoding="utf-8") as f:
         raw = yaml.safe_load(f)
     run_cfg = raw | {"model_name": raw.get("model_name", "")}
-    _run_multi_cfgs([run_cfg], verbose)
+    _run_multi_cfgs([run_cfg], verbose, dump_server_output)
 
 
 def main():
     p = argparse.ArgumentParser(description="Run one or more benchmark configs")
     p.add_argument("configs", nargs="+", help="One or more YAML config paths")
     p.add_argument("-v", "--verbose", action="store_true")
+    p.add_argument("-d", "--dump-server-output", action="store_true")
     args = p.parse_args()
 
     for yaml_path in args.configs:
@@ -341,9 +344,9 @@ def main():
             is_multi = any(isinstance(v, list) for v in raw.values())
             if is_multi:
                 console.print(f"[cyan]Multi-run mode detected[/] → {yaml_path}")
-                _run_multi(yaml_path, verbose=args.verbose)
+                _run_multi(yaml_path, verbose=args.verbose, dump_server_output=args.dump_server_output)
             else:
-                _run_single(yaml_path, verbose=args.verbose)
+                _run_single(yaml_path, verbose=args.verbose, dump_server_output=args.dump_server_output)
 
         except Exception:
             console.print(f"[red]✗ Failed to load or run config:[/] {yaml_path}")

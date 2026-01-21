@@ -21,7 +21,7 @@ class InferenceEngineClient:
 
     
 
-    def launch(self, backend: str, model: str, timeout: float = 500.0):
+    def launch(self, backend: str, model: str, timeout: float = 500.0, dump_server_output: bool = False):
         """
         1) Starts your existing launch_engine.sh in a Popen (non-blocking).
         2) Polls `http://127.0.0.1:23333/v1/models` every 2 seconds
@@ -52,7 +52,7 @@ class InferenceEngineClient:
         )
 
         # Start a daemon thread to read the launcher output
-        _start_log_tailer(self, max_lines=10)
+        _start_log_tailer(self, max_lines=10, dump_server_output=dump_server_output)
 
         # 2) Poll /v1/models until our model_id appears or timeout.
         list_url = "http://127.0.0.1:23333/v1/models"
