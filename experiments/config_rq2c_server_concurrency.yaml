@@ -8,15 +8,15 @@ hf_model:
   - name: mistralai/Mistral-7B-Instruct-v0.3
     top_p: 0.95
     max_tokens: 32  # Shorter outputs for server scenario (paper mentions avg 32 tokens)
-    temperature: 0.6
+    temperature: 0.1
   - name: Qwen/Qwen2.5-7B-Instruct
     top_p: 0.95
     max_tokens: 32
-    temperature: 0.6
+    temperature: 0.1
   - name: meta-llama/Llama-3.1-8B-Instruct
     top_p: 0.95
     max_tokens: 32
-    temperature: 0.6
+    temperature: 0.1
 
 task: [mmlu, qa, summarization, sql]
 
