@@ -1,0 +1,31 @@
+# RQ2c: Server Concurrency
+# Measures multi-user serving with Poisson arrivals and QoS thresholds
+# Run on each GPU separately: CUDA_VISIBLE_DEVICES=0 python launch_benchmark.py config_rq2c_server_concurrency.yaml
+
+backend: [vllm, sglang, tgi, lmdeploy]
+
+hf_model:
+  - name: mistralai/Mistral-7B-Instruct-v0.3
+    top_p: 0.95
+    max_tokens: 32  # Shorter outputs for server scenario (paper mentions avg 32 tokens)
+    temperature: 0.6
+  - name: Qwen/Qwen2.5-7B-Instruct
+    top_p: 0.95
+    max_tokens: 32
+    temperature: 0.6
+  - name: meta-llama/Llama-3.1-8B-Instruct
+    top_p: 0.95
+    max_tokens: 32
+    temperature: 0.6
+
+task: [mmlu, qa, summarization, sql]
+
+scenario: server
+
+concurrent_users: [8, 16, 32, 64]
+
+arrival_rate: 12  # 12 requests per minute (Poisson arrivals)
+
+# QoS Thresholds (if supported by framework):
+# ttft_threshold: 2.0  # 2 seconds for first token
+# e2e_threshold: 6.0   # 6 seconds end-to-end

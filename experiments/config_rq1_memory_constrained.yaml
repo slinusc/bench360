@@ -1,0 +1,47 @@
+# RQ1: Memory-Constrained Deployment (24GB VRAM Budget)
+# Compares FP16 baselines vs larger quantized models within same memory constraints
+# Backend: vLLM only
+# Run on each GPU separately: CUDA_VISIBLE_DEVICES=0 python launch_benchmark.py config_rq1_memory_constrained.yaml
+
+backend: vllm
+
+hf_model:
+  # Gemma-2 family: 9B FP16 vs 27B INT4
+  - name: google/gemma-2-9b-it
+    top_p: 0.95
+    max_tokens: 128
+    temperature: 0.6
+  - name: shuyuej/gemma-2-27b-it-GPTQ  # INT4 quantized
+    top_p: 0.95
+    max_tokens: 128
+    temperature: 0.6
+
+  # Mistral family: 7B FP16 vs 24B INT4
+  - name: mistralai/Mistral-7B-Instruct-v0.3
+    top_p: 0.95
+    max_tokens: 128
+    temperature: 0.6
+  - name: shuyuej/Mistral-Small-Instruct-2409-GPTQ  # 24B INT4
+    top_p: 0.95
+    max_tokens: 128
+    temperature: 0.6
+
+  # Qwen2.5 family: 7B FP16 vs 14B INT8 vs 32B INT4
+  - name: Qwen/Qwen2.5-7B-Instruct
+    top_p: 0.95
+    max_tokens: 128
+    temperature: 0.6
+  - name: Qwen/Qwen2.5-14B-Instruct-GPTQ-Int8  # INT8 quantized (verify model name)
+    top_p: 0.95
+    max_tokens: 128
+    temperature: 0.6
+  - name: Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4  # INT4 quantized (verify model name)
+    top_p: 0.95
+    max_tokens: 128
+    temperature: 0.6
+
+task: [mmlu, qa, summarization, sql]
+
+scenario: batch
+
+batch_size: 32

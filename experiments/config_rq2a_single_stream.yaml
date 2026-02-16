@@ -1,0 +1,23 @@
+# RQ2a: Single-Stream Latency
+# Measures startup time, TTFT, and TPOT for interactive use cases
+# Run on each GPU separately: CUDA_VISIBLE_DEVICES=0 python launch_benchmark.py config_rq2a_single_stream.yaml
+
+backend: [vllm, sglang, tgi, lmdeploy]
+
+hf_model:
+  - name: mistralai/Mistral-7B-Instruct-v0.3
+    top_p: 0.95
+    max_tokens: 128
+    temperature: 0.6
+  - name: Qwen/Qwen2.5-7B-Instruct
+    top_p: 0.95
+    max_tokens: 128
+    temperature: 0.6
+  - name: meta-llama/Llama-3.1-8B-Instruct
+    top_p: 0.95
+    max_tokens: 128
+    temperature: 0.6
+
+task: [mmlu, qa, summarization, sql]
+
+scenario: single
