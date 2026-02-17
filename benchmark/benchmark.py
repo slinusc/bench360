@@ -51,10 +51,9 @@ class ModelBenchmark:
         top_p: float = 0.95,
         max_tokens: int = 128,
         verbose=False,
-        dump_server_output: bool = False
+        dump_server_output: bool = False,
+        script_path: str = None
     ):
-        if backend not in ("tgi", "mii", "sglang", "vllm", "lmdeploy"):
-            raise ValueError(f"Unsupported backend: {backend}. Supported backends are: tgi, mii, sglang, vllm, lmdeploy.")
         self.backend = backend
         self.model_path = model_path
         self.model_name = model_name
@@ -62,6 +61,7 @@ class ModelBenchmark:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.verbose = verbose
         self.dump_server_output = dump_server_output
+        self.script_path = script_path
         self.iec = InferenceEngineClient()
         self.api = HfApi()
         self.temperature = temperature
@@ -238,7 +238,7 @@ class ModelBenchmark:
 
         # ── First launch: cold start ──────────────────────────────
         t0 = time.time()
-        self.iec.launch(backend=self.backend, model=self.model_path, dump_server_output=self.dump_server_output)
+        self.iec.launch(backend=self.backend, model=self.model_path, dump_server_output=self.dump_server_output, script_path=self.script_path)
         startup = time.time() - t0
 
         # optional warm-up

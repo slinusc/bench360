@@ -22,7 +22,7 @@ class InferenceEngineClient:
 
     
 
-    def launch(self, backend: str, model: str, timeout: float = 500.0, dump_server_output: bool = False):
+    def launch(self, backend: str, model: str, timeout: float = 500.0, dump_server_output: bool = False, script_path: str = None):
         """
         1) Starts your existing launch_engine.sh in a Popen (non-blocking).
         2) Polls `http://127.0.0.1:23333/v1/models` every 2 seconds
@@ -32,7 +32,8 @@ class InferenceEngineClient:
         :param model: HF model ID or local path
         :param timeout: Max seconds to wait for the model to appear before raising.
         """
-        script_path = os.path.join(os.getcwd(), "benchmark/launch_engine.sh")
+        if script_path is None:
+            script_path = os.path.join(os.getcwd(), "benchmark/launch_engine.sh")
         if not os.path.isfile(script_path):
             raise FileNotFoundError(f"Cannot find '{script_path}'.")
         if not os.access(script_path, os.X_OK):
