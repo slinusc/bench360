@@ -45,3 +45,5 @@ task: [mmlu, qa, summarization, sql]
 scenario: batch
 
 batch_size: 32
+
+samples: 512
